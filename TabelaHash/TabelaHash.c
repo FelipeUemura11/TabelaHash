@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define M 19 // numero primo mais proximo de u vetor de 20 elementos
-// Pessoa
+#define tamanho 19 // numero primo mais proximo de u vetor de 20 elementos
+// Usuario
 typedef struct{
-    int matricula;
+    int id;
     char nome[45];
-}Pessoa;
+}Usuario;
 // No
 typedef struct no{
-    Pessoa pessoa;
+    Usuario usuario;
     struct no *proximo;
 } No;
 // Lista
@@ -18,20 +18,20 @@ typedef struct {
     int tam;
 }Lista;
 // vetor de posicoes da lista
-Lista *tabela[M];
+Lista *tabela[tamanho];
 
-Pessoa criarPessoa(){
-    Pessoa p;
-    printf(" >> Digite o nome da pessoa: ");
+Usuario criarUsuario(){
+    Usuario p;
+    printf(" >> Digite o nome da Usuario: ");
     scanf(" %*c", &p.nome); // limpar buffer
     fgets(p.nome, 45, stdin);
-    printf(" >> Digite a matricula: ");
-    scanf("%d", &p.matricula);
+    printf(" >> Digite a id: ");
+    scanf("%d", &p.id);
     return p;
 }
 
-void imprimirPessoa(Pessoa p){
-    printf("\tNome: %s\tMatricula: %d\n", p.nome, p.matricula);
+void imprimirUsuario(Usuario p){
+    printf("\tNome: %s\tid: %d\n", p.nome, p.id);
 }
 // >>> INICIO DAS FUNCOES DE LISTA <<<
 
@@ -43,9 +43,9 @@ Lista* criarLista(){
     return l;
 }
 
-void inserirInicio(Pessoa p, Lista *lista){
+void inserirInicio(Usuario p, Lista *lista){
     No *no = malloc(sizeof(No));
-    no->pessoa = p;
+    no->usuario = p;
 
     no->proximo = lista->inicio;
     lista->inicio = no;
@@ -54,7 +54,7 @@ void inserirInicio(Pessoa p, Lista *lista){
 
 No* buscarNo(int mat, No *inicio){
     while(inicio != NULL){
-        if(inicio->pessoa.matricula == mat){
+        if(inicio->usuario.id == mat){
             return inicio;
         }else{
             inicio = inicio->proximo;
@@ -66,35 +66,35 @@ No* buscarNo(int mat, No *inicio){
 
 void imprimirLista(No *inicio){
     while(inicio != NULL){
-        imprimirPessoa(inicio->pessoa);
+        imprimirUsuario(inicio->usuario);
         inicio = inicio->proximo;
     }
 }
 
 void inicializar(){
     int i;
-    for(i = 0; i < M; i++){
+    for(i = 0; i < tamanho; i++){
         tabela[i] = criarLista();
     }
 }
 // Busca pelo Hash
 int funcaoHash(int mat){
-    return mat % M;
+    return mat % tamanho;
 }
 
 void inserirTabela(){
-    Pessoa pes = criarPessoa();
-    int indice = funcaoHash(pes.matricula);
+    Usuario pes = criarUsuario();
+    int indice = funcaoHash(pes.id);
     inserirInicio(pes, tabela[indice]);
 }
 
-// Busca uma pessoa
+// Busca uma Usuario
 
-Pessoa* buscarPessoaTabela(int mat){
+Usuario* buscarUsuarioTabela(int mat){
     int indice = funcaoHash(mat);
     No *no = buscarNo(mat, tabela[indice]->inicio);
     if(no != NULL){
-        return &no->pessoa;
+        return &no->usuario;
     }else{
         return NULL;
     }
@@ -108,7 +108,7 @@ void imprimirTabela(){
 
     printf("\n >>> TABELA <<< \n");
     
-    for(i = 0; i < M; i++){
+    for(i = 0; i < tamanho; i++){
         printf("[%d] Tamanho da Lista: %d\n", i, tabela[i]->tam);
         imprimirLista(tabela[i]->inicio);
     }
@@ -118,7 +118,7 @@ void imprimirTabela(){
 int main(){
 
     int opcao = 0, mat;
-    Pessoa *p;
+    Usuario *p;
 
     // Criar lista para cada posicao da tabela
     inicializar();
@@ -139,16 +139,16 @@ int main(){
                 inserirTabela();
                 break;
             case 2:
-                printf("Informe a matricula: ");
+                printf("Informe a id: ");
                 scanf("%d", &mat);
 
-                p = buscarPessoaTabela(mat);
+                p = buscarUsuarioTabela(mat);
                 if(p != NULL){
-                    printf("Pessoa encontrada!\n");
-                    printf("Matricula: %d\n", p->matricula);
+                    printf("Usuario encontrada!\n");
+                    printf("id: %d\n", p->id);
                     printf("Nome: %s\n", p->nome);
                 }else{
-                    printf("Pessoa encontrada!\n");
+                    printf("Usuario encontrada!\n");
                 }
                 break;
             case 3:
